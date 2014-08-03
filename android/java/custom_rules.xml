@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="custom_rules" default="help">
+  <target name="-post-compile">
+    <javah classpath="./bin/classes" destdir="../jni/">
+      <class name="org.cocos2dx.lib.Cocos2dxWebViewHelper" />
+    </javah>
+  </target>
+</project>
