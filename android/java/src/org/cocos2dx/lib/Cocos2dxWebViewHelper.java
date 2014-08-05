@@ -4,7 +4,6 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -111,7 +110,6 @@ public class Cocos2dxWebViewHelper {
     }
 
     private void _createWebView(int index) {
-        Log.d(TAG, "_createWebView(" + index + ")");
         Cocos2dxWebView webView = new Cocos2dxWebView(cocos2dxActivity, index);
         FrameLayout.LayoutParams lParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
