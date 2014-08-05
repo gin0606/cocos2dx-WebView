@@ -1,19 +1,11 @@
-//
-// Created by gin0606 on 2014/07/29.
-//
-
+#ifndef __CC_WebView_INL_H_
+#define __CC_WebView_INL_H_
 
 #include "WebView.h"
-#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
-#include "WebViewImpl_iOS.h"
-#else
-#include "WebViewImpl_android.h"
-#endif
 #include "CCGLView.h"
 #include "base/CCDirector.h"
 #include "platform/CCFileUtils.h"
 
-// 拡張子はcppだが、Objective-C++にしないとBuildが通らない
 namespace cocos2d {
 namespace plugin {
 WebView::WebView() : impl(new WebViewImpl(this)) {
@@ -55,3 +47,5 @@ void WebView::setVisible(bool visible) {
 }
 } // namespace cocos2d
 } // namespace plugin
+
+#endif

@@ -6,7 +6,7 @@ LOCAL_MODULE    := cocos_webview_plugin_static
 LOCAL_MODULE_FILENAME := libwebviewplugin
 
 LOCAL_SRC_FILES := \
-	../common/WebView.cpp \
+	WebView.cpp \
 	WebViewImpl_android.cpp \
 	jni/org_cocos2dx_lib_Cocos2dxWebViewHelper.cpp
 

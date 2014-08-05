@@ -5,7 +5,6 @@
 # How to setup
 ## iOS
 * Add `cocos2dx-WebView/common` and `cocos2dx-WebView/ios` to your project.
-* Change `common/WebView.cpp` type to Objective-C++.
 
 ## Android
 ```sh
