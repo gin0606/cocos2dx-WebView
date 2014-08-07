@@ -29,3 +29,15 @@ webView->setPosition(cocos2d::Director::getInstance()->getVisibleSize() / 2);
 webView->loadUrl("http://www.google.co.jp");
 this->addChild(webView);
 ```
+
+---
+
+- [ ] `canGoBack`
+- [ ] `canGoForward`
+- [ ] `goBack`
+- [ ] `goForward`
+- [ ] `scalesPageToFit`(Android:`WebSettings.setSupportZoom`
+- [ ] `loadData:MIMEType:textEncodingName:baseURL:`(Android:`loadDataWithBaseURL(String baseUrl, String data, String mimeType, String encoding, String historyUrl)`)
+- [ ] `loadHTMLString:baseURL:`(Android:`loadData(String data, String mimeType, String encoding)`)
+- [ ] `stopLoading`
+- [ ] `reload`
