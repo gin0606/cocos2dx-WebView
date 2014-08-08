@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -18,7 +19,7 @@ public class Cocos2dxWebViewHelper {
     private FrameLayout layout;
 
     static private WebViewHandler handler;
-    private SparseArray<Cocos2dxWebView> webViews;
+    private static SparseArray<Cocos2dxWebView> webViews;
     private static int viewTag = 0;
 
     private static final int kWebViewTaskCreate = 0;
@@ -28,13 +29,14 @@ public class Cocos2dxWebViewHelper {
     private static final int kWebViewTaskEvaluateJS = 4;
     private static final int kWebViewTaskSetVisible = 5;
     private static final int kWebViewTaskSetJsScheme = 6;
+    private static final int kWebViewTaskGoBack = 7;
+    private static final int kWebViewTaskGoForward = 8;
 
     public Cocos2dxWebViewHelper(Cocos2dxActivity activity, FrameLayout layout) {
         this.cocos2dxActivity = activity;
         this.layout = layout;
 
-        this.webViews = new SparseArray<Cocos2dxWebView>();
-
+        Cocos2dxWebViewHelper.webViews = new SparseArray<Cocos2dxWebView>();
         Cocos2dxWebViewHelper.handler = new WebViewHandler(Looper.myLooper(), this);
     }
 
@@ -95,6 +97,12 @@ public class Cocos2dxWebViewHelper {
                     break;
                 case kWebViewTaskSetJsScheme:
                     helper._setJavascriptInterfaceScheme(msg.arg1, (String) msg.obj);
+                    break;
+                case kWebViewTaskGoBack:
+                    helper._goBack(msg.arg1);
+                    break;
+                case kWebViewTaskGoForward:
+                    helper._goForward(msg.arg1);
                     break;
                 default:
                     Assert.fail("unknown message");
@@ -214,6 +222,44 @@ public class Cocos2dxWebViewHelper {
         Cocos2dxWebView webView = webViews.get(index);
         if (webView != null) {
             webView.loadUrl(filePath);
+        }
+    }
+
+    public static boolean canGoBack(int index) {
+        Cocos2dxWebView webView = webViews.get(index);
+        return webView != null && webView.canGoBack();
+    }
+
+    public static boolean canGoForward(int index) {
+        Cocos2dxWebView webView = webViews.get(index);
+        return webView != null && webView.canGoForward();
+    }
+
+    public static void goBack(int index) {
+        Message msg = new Message();
+        msg.what = kWebViewTaskGoBack;
+        msg.arg1 = index;
+        handler.sendMessage(msg);
+    }
+
+    private void _goBack(int index) {
+        Cocos2dxWebView webView = webViews.get(index);
+        if (webView != null) {
+            webView.goBack();
+        }
+    }
+
+    public static void goForward(int index) {
+        Message msg = new Message();
+        msg.what = kWebViewTaskGoForward;
+        msg.arg1 = index;
+        handler.sendMessage(msg);
+    }
+
+    private void _goForward(int index) {
+        Cocos2dxWebView webView = webViews.get(index);
+        if (webView != null) {
+            webView.goForward();
         }
     }
 

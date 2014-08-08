@@ -60,6 +60,22 @@ void WebViewImpl::loadFile(const std::string &fileName) {
     [uiWebViewWrapper loadFile:fullPath];
 }
 
+bool WebViewImpl::canGoBack() {
+    return uiWebViewWrapper.canGoBack;
+}
+
+bool WebViewImpl::canGoForward() {
+    return uiWebViewWrapper.canGoForward;
+}
+
+void WebViewImpl::goBack() {
+    [uiWebViewWrapper goBack];
+}
+
+void WebViewImpl::goForward() {
+    [uiWebViewWrapper goForward];
+}
+
 void WebViewImpl::evaluateJS(const std::string &js) {
     [uiWebViewWrapper evaluateJS:js];
 }

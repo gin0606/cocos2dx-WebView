@@ -14,6 +14,9 @@
 @property (nonatomic) std::function<void(std::string url)> didFailLoading;
 @property (nonatomic) std::function<void(std::string url)> onJsCallback;
 
+@property(nonatomic, readonly, getter=canGoBack) BOOL canGoBack;
+@property(nonatomic, readonly, getter=canGoForward) BOOL canGoForward;
+
 + (instancetype)webViewWrapper;
 
 - (void)setVisible:(bool)visible;
@@ -27,4 +30,8 @@
 - (void)loadFile:(const std::string &)filePath;
 
 - (void)evaluateJS:(const std::string &)js;
+
+- (void)goBack;
+
+- (void)goForward;
 @end

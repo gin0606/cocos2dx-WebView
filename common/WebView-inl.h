@@ -36,6 +36,22 @@ void WebView::loadFile(const std::string &fileName) {
     impl->loadFile(fileName);
 }
 
+bool cocos2d::plugin::WebView::canGoBack() {
+    return impl->canGoBack();
+}
+
+bool cocos2d::plugin::WebView::canGoForward() {
+    return impl->canGoForward();
+}
+
+void cocos2d::plugin::WebView::goBack() {
+    impl->goBack();
+}
+
+void cocos2d::plugin::WebView::goForward() {
+    impl->goForward();
+}
+
 void WebView::evaluateJS(const std::string &js) {
     impl->evaluateJS(js);
 }

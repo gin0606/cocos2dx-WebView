@@ -68,6 +68,42 @@ static void loadFileJNI(int index, std::string filePath) {
     }
 }
 
+static bool canGoBackJNI(int index) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "canGoBack", "(I)Z")) {
+        jboolean ret = t.env->CallStaticBooleanMethod(t.classID, t.methodID, index);
+        t.env->DeleteLocalRef(t.classID);
+        return ret;
+    }
+    return false;
+}
+
+static bool canGoForwardJNI(int index) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "canGoForward", "(I)Z")) {
+        jboolean ret = t.env->CallStaticBooleanMethod(t.classID, t.methodID, index);
+        t.env->DeleteLocalRef(t.classID);
+        return ret;
+    }
+    return false;
+}
+
+static void goBackJNI(int index) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "goBack", "(I)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
+static void goForwardJNI(int index) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "goForward", "(I)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
 static void evaluateJSJNI(int index, std::string js) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "evaluateJS", "(ILjava/lang/String;)V")) {
@@ -123,6 +159,22 @@ void WebViewImpl::loadUrl(const std::string &url) {
 void WebViewImpl::loadFile(const std::string &fileName) {
     auto fullPath = getUrlStringByFileName(fileName);
     loadFileJNI(viewTag, fullPath);
+}
+
+bool WebViewImpl::canGoBack() {
+    return canGoBackJNI(viewTag);
+}
+
+bool WebViewImpl::canGoForward() {
+    return canGoForwardJNI(viewTag);
+}
+
+void WebViewImpl::goBack() {
+    goBackJNI(viewTag);
+}
+
+void WebViewImpl::goForward() {
+    goForwardJNI(viewTag);
 }
 
 void WebViewImpl::setJavascriptInterfaceScheme(const std::string &scheme) {

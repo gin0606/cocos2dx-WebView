@@ -82,6 +82,22 @@
     [self.uiWebView loadRequest:request];
 }
 
+- (BOOL)canGoForward {
+    return self.uiWebView.canGoForward;
+}
+
+- (BOOL)canGoBack {
+    return self.uiWebView.canGoBack;
+}
+
+- (void)goBack {
+    [self.uiWebView goBack];
+}
+
+- (void)goForward {
+    [self.uiWebView goForward];
+}
+
 - (void)evaluateJS:(const std::string &)js {
     if (!self.uiWebView) {[self setupWebView];}
     [self.uiWebView stringByEvaluatingJavaScriptFromString:@(js.c_str())];

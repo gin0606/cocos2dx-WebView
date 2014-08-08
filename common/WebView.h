@@ -36,6 +36,14 @@ public:
     void loadUrl(const std::string &url);
     void loadFile(const std::string &fileName);
 
+    bool canGoBack();
+
+    bool canGoForward();
+
+    void goBack();
+
+    void goForward();
+
     void evaluateJS(const std::string &js);
 
     virtual void draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transform, uint32_t flags) override;
