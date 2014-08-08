@@ -21,6 +21,8 @@ public:
 
     virtual ~WebViewImpl();
 
+    void setJavascriptInterfaceScheme(const std::string &scheme);
+
     void loadUrl(const std::string &url);
 
     void loadFile(const std::string &fileName);

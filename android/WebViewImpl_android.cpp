@@ -39,6 +39,17 @@ static void setWebViewRectJNI(int index,int left,int top,int width,int height) {
     }
 }
 
+static void setJavascriptInterfaceSchemeJNI(int index, std::string scheme) {
+    CCLOG("setJavascriptInterfaceSchemeJNI");
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setJavascriptInterfaceScheme", "(ILjava/lang/String;)V")) {
+        CCLOG("setJavascriptInterfaceSchemeJNI");
+        jstring jScheme = t.env->NewStringUTF(scheme.c_str());
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index, jScheme);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
 static void loadUrlJNI(int index, std::string url) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "loadUrl", "(ILjava/lang/String;)V")) {
@@ -112,6 +123,10 @@ void WebViewImpl::loadUrl(const std::string &url) {
 void WebViewImpl::loadFile(const std::string &fileName) {
     auto fullPath = getUrlStringByFileName(fileName);
     loadFileJNI(viewTag, fullPath);
+}
+
+void WebViewImpl::setJavascriptInterfaceScheme(const std::string &scheme) {
+    setJavascriptInterfaceSchemeJNI(viewTag, scheme);
 }
 
 void WebViewImpl::evaluateJS(const std::string &js) {

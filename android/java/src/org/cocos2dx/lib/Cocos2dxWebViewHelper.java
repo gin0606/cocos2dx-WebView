@@ -27,7 +27,7 @@ public class Cocos2dxWebViewHelper {
     private static final int kWebViewTaskLoadURI = 3;
     private static final int kWebViewTaskEvaluateJS = 4;
     private static final int kWebViewTaskSetVisible = 5;
-
+    private static final int kWebViewTaskSetJsScheme = 6;
 
     public Cocos2dxWebViewHelper(Cocos2dxActivity activity, FrameLayout layout) {
         this.cocos2dxActivity = activity;
@@ -92,6 +92,9 @@ public class Cocos2dxWebViewHelper {
                     break;
                 case kWebViewTaskSetVisible:
                     helper._setVisible(msg.arg1, msg.arg2 != 0);
+                    break;
+                case kWebViewTaskSetJsScheme:
+                    helper._setJavascriptInterfaceScheme(msg.arg1, (String) msg.obj);
                     break;
                 default:
                     Assert.fail("unknown message");
@@ -165,6 +168,22 @@ public class Cocos2dxWebViewHelper {
         Cocos2dxWebView webView = webViews.get(index);
         if (webView != null) {
             webView.setWebViewRect(left, top, maxWidth, maxHeight);
+        }
+    }
+
+    public static void setJavascriptInterfaceScheme(int index, String scheme) {
+        Message msg = new Message();
+        msg.what = kWebViewTaskSetJsScheme;
+        msg.arg1 = index;
+        msg.obj = scheme;
+        handler.sendMessage(msg);
+    }
+
+    private void _setJavascriptInterfaceScheme(int index, String scheme) {
+        Log.d(TAG, "_setJavascriptInterfaceScheme");
+        Cocos2dxWebView webView = webViews.get(index);
+        if (webView != null) {
+            webView.setJavascriptInterfaceScheme(scheme);
         }
     }
 

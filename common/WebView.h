@@ -18,10 +18,20 @@ public:
     WebView();
     virtual ~WebView();
 
-    std::function<void(WebView *sender, std::string message)> onJsCallback;
     std::function<bool(WebView *sender, std::string url)> shouldStartLoading;
     std::function<void(WebView *sender, std::string url)> didFinishLoading;
     std::function<void(WebView *sender, std::string url)> didFailLoading;
+
+    /**
+    * Set javascript interface scheme.
+    * See `onJsCallback`.
+    */
+    void setJavascriptInterfaceScheme(const std::string &scheme);
+
+    /**
+    * This callback called when load URL that start with javascript interface scheme.
+    */
+    std::function<void(WebView *sender, std::string message)> onJsCallback;
 
     void loadUrl(const std::string &url);
     void loadFile(const std::string &fileName);

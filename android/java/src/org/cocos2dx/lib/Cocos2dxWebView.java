@@ -6,10 +6,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
+import java.net.URI;
+
 public class Cocos2dxWebView extends WebView {
     private static final String TAG = Cocos2dxWebViewHelper.class.getSimpleName();
 
     private int viewTag;
+    private String jsScheme;
 
     public Cocos2dxWebView(Context context) {
         this(context, -1);
@@ -19,6 +22,7 @@ public class Cocos2dxWebView extends WebView {
     public Cocos2dxWebView(Context context, int viewTag) {
         super(context);
         this.viewTag = viewTag;
+        this.jsScheme = "";
 
         this.setFocusable(true);
         this.setFocusableInTouchMode(true);
@@ -29,11 +33,19 @@ public class Cocos2dxWebView extends WebView {
         this.setWebViewClient(new Cocos2dxWebViewClient());
     }
 
+    public void setJavascriptInterfaceScheme(String scheme) {
+        this.jsScheme = scheme != null ? scheme : "";
+    }
+
     class Cocos2dxWebViewClient extends WebViewClient {
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            // TODO: 設定されてるschemeだったらC++側に情報わたす処理
-            return Cocos2dxWebViewHelper._shouldStartLoading(viewTag, url);
+        public boolean shouldOverrideUrlLoading(WebView view, String urlString) {
+            URI uri = URI.create(urlString);
+            if (uri != null && uri.getScheme().equals(jsScheme)) {
+                Cocos2dxWebViewHelper._onJsCallback(viewTag, urlString);
+                return true;
+            }
+            return Cocos2dxWebViewHelper._shouldStartLoading(viewTag, urlString);
         }
 
         @Override

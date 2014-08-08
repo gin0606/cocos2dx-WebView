@@ -24,6 +24,10 @@ WebView *WebView::create() {
     return nullptr;
 }
 
+void WebView::setJavascriptInterfaceScheme(const std::string &scheme) {
+    impl->setJavascriptInterfaceScheme(scheme);
+}
+
 void WebView::loadUrl(const std::string &url) {
     impl->loadUrl(url);
 }

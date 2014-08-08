@@ -35,11 +35,20 @@ WebViewImpl::WebViewImpl(WebView *webView)
             this->webView->didFailLoading(this->webView, url);
         }
     };
+    uiWebViewWrapper.onJsCallback = [this](std::string url) {
+        if (this->webView->onJsCallback) {
+            this->webView->onJsCallback(this->webView, url);
+        }
+    };
 }
 
 WebViewImpl::~WebViewImpl() {
     [uiWebViewWrapper release];
     uiWebViewWrapper = nullptr;
+}
+
+void WebViewImpl::setJavascriptInterfaceScheme(const std::string &scheme) {
+    [uiWebViewWrapper setJavascriptInterfaceScheme:scheme];
 }
 
 void WebViewImpl::loadUrl(const std::string &url) {

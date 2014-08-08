@@ -12,6 +12,7 @@
 
 @interface UIWebViewWrapper () <UIWebViewDelegate>
 @property(nonatomic, retain) UIWebView *uiWebView;
+@property(nonatomic, copy) NSString *jsScheme;
 @end
 
 @implementation UIWebViewWrapper {
@@ -35,6 +36,7 @@
 
 - (void)dealloc {
     [self.uiWebView removeFromSuperview];
+    self.jsScheme = nil;
     [super dealloc];
 }
 
@@ -62,6 +64,10 @@
     }
 }
 
+- (void)setJavascriptInterfaceScheme:(const std::string &)scheme {
+    self.jsScheme = @(scheme.c_str());
+}
+
 - (void)loadUrl:(const std::string &)urlString {
     if (!self.uiWebView) {[self setupWebView];}
     NSURL *url = [NSURL URLWithString:@(urlString.c_str())];
@@ -83,9 +89,12 @@
 
 #pragma mark - UIWebViewDelegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    // TODO: 設定されてるschemeだったらC++側に情報わたす処理
+    NSString *url = [[request URL] absoluteString];
+    if ([[[request URL] scheme] isEqualToString:self.jsScheme]) {
+        self.onJsCallback([url UTF8String]);
+        return NO;
+    }
     if (self.shouldStartLoading) {
-        NSString *url = [[request URL] absoluteString];
         return self.shouldStartLoading([url UTF8String]);
     }
     return YES;
