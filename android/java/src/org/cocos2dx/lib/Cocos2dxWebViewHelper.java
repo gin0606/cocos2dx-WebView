@@ -31,6 +31,7 @@ public class Cocos2dxWebViewHelper {
     private static final int kWebViewTaskSetJsScheme = 6;
     private static final int kWebViewTaskGoBack = 7;
     private static final int kWebViewTaskGoForward = 8;
+    private static final int kWebViewTaskLoadData = 9;
 
     public Cocos2dxWebViewHelper(Cocos2dxActivity activity, FrameLayout layout) {
         this.cocos2dxActivity = activity;
@@ -104,6 +105,11 @@ public class Cocos2dxWebViewHelper {
                 case kWebViewTaskGoForward:
                     helper._goForward(msg.arg1);
                     break;
+                case kWebViewTaskLoadData: {
+                    String[] args = (String[]) msg.obj;
+                    helper._loadData(msg.arg1, args[0], args[1], args[2], args[3]);
+                    break;
+                }
                 default:
                     Assert.fail("unknown message");
                     break;
@@ -192,6 +198,29 @@ public class Cocos2dxWebViewHelper {
         Cocos2dxWebView webView = webViews.get(index);
         if (webView != null) {
             webView.setJavascriptInterfaceScheme(scheme);
+        }
+    }
+
+    public static void loadData(int index, String data, String mimeType, String encoding, String baseURL) {
+        String[] args = {data, mimeType, encoding, baseURL};
+        Message msg = new Message();
+        msg.what = kWebViewTaskLoadData;
+        msg.arg1 = index;
+        msg.obj = args;
+        handler.sendMessage(msg);
+    }
+
+    private void _loadData(int index, String data, String mimeType, String encoding, String baseURL) {
+        Cocos2dxWebView webView = webViews.get(index);
+        if (webView != null) {
+            webView.loadDataWithBaseURL(baseURL, data, mimeType, encoding, null);
+        }
+    }
+
+    public static void loadHTMLString(int index, String htmlString, String mimeType, String encoding) {
+        Cocos2dxWebView webView = webViews.get(index);
+        if (webView != null) {
+            webView.loadData(htmlString, mimeType, encoding);
         }
     }
 

@@ -25,6 +25,10 @@
 
 - (void)setJavascriptInterfaceScheme:(const std::string &)scheme;
 
+- (void)loadData:(const std::string &)data MIMEType:(const std::string &)MIMEType textEncodingName:(const std::string &)encodingName baseURL:(const std::string &)baseURL;
+
+- (void)loadHTMLString:(const std::string &)string baseURL:(const std::string &)baseURL;
+
 - (void)loadUrl:(const std::string &)urlString;
 
 - (void)loadFile:(const std::string &)filePath;

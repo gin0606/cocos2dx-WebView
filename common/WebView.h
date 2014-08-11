@@ -6,6 +6,7 @@
 #define __Cocos2d_Plugin_WebView_H_
 
 #include "ui/UIWidget.h"
+#include "base/CCData.h"
 
 namespace cocos2d {
 namespace plugin {
@@ -32,6 +33,22 @@ public:
     * This callback called when load URL that start with javascript interface scheme.
     */
     std::function<void(WebView *sender, std::string message)> onJsCallback;
+
+    /**
+    * Sets the main page contents, MIME type, content encoding, and base URL.
+    * @param data The content for the main page.
+    * @param MIMEType The MIME type of the data.
+    * @param encoding the encoding of the data.
+    * @param baseURL The base URL for the content.
+    */
+    void loadData(const cocos2d::Data &data, const std::string &MIMEType, const std::string &encoding, const std::string &baseURL);
+
+    /**
+    * Sets the main page content and base URL.
+    * @param string The content for the main page.
+    * @param baseURL The base URL for the content.
+    */
+    void loadHTMLString(const std::string &string, const std::string &baseURL);
 
     void loadUrl(const std::string &url);
     void loadFile(const std::string &fileName);

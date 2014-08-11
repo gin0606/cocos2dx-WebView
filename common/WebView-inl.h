@@ -28,6 +28,14 @@ void WebView::setJavascriptInterfaceScheme(const std::string &scheme) {
     impl->setJavascriptInterfaceScheme(scheme);
 }
 
+void WebView::loadData(const cocos2d::Data &data, const std::string &MIMEType, const std::string &encoding, const std::string &baseURL) {
+    impl->loadData(data, MIMEType, encoding, baseURL);
+}
+
+void WebView::loadHTMLString(const std::string &string, const std::string &baseURL) {
+    impl->loadHTMLString(string, baseURL);
+}
+
 void WebView::loadUrl(const std::string &url) {
     impl->loadUrl(url);
 }

@@ -68,6 +68,17 @@
     self.jsScheme = @(scheme.c_str());
 }
 
+- (void)loadData:(const std::string &)data MIMEType:(const std::string &)MIMEType textEncodingName:(const std::string &)encodingName baseURL:(const std::string &)baseURL {
+    [self.uiWebView loadData:[NSData dataWithBytes:data.c_str() length:data.length()]
+                    MIMEType:@(MIMEType.c_str())
+            textEncodingName:@(encodingName.c_str())
+                     baseURL:[NSURL URLWithString:@(baseURL.c_str())]];
+}
+
+- (void)loadHTMLString:(const std::string &)string baseURL:(const std::string &)baseURL {
+    [self.uiWebView loadHTMLString:@(string.c_str()) baseURL:[NSURL URLWithString:@(baseURL.c_str())]];
+}
+
 - (void)loadUrl:(const std::string &)urlString {
     if (!self.uiWebView) {[self setupWebView];}
     NSURL *url = [NSURL URLWithString:@(urlString.c_str())];

@@ -50,6 +50,28 @@ static void setJavascriptInterfaceSchemeJNI(int index, std::string scheme) {
     }
 }
 
+static void loadDataJNI(const int index, const std::string &data, const std::string &MIMEType, const std::string &encoding, const std::string &baseURL) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "loadData", "(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V")) {
+        jstring jData = t.env->NewStringUTF(data.c_str());
+        jstring jMIMEType = t.env->NewStringUTF(MIMEType.c_str());
+        jstring jEncoding = t.env->NewStringUTF(encoding.c_str());
+        jstring jBaseURL = t.env->NewStringUTF(baseURL.c_str());
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index, jData, jMIMEType, jEncoding, jBaseURL);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
+static void loadHTMLStringJNI(const int index, const std::string &string, const std::string &baseURL) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "loadHTMLString", "(ILjava/lang/String;Ljava/lang/String;)V")) {
+        jstring jString = t.env->NewStringUTF(string.c_str());
+        jstring jBaseURL = t.env->NewStringUTF(baseURL.c_str());
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index, jString, jBaseURL);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
 static void loadUrlJNI(int index, std::string url) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "loadUrl", "(ILjava/lang/String;)V")) {
@@ -150,6 +172,15 @@ WebViewImpl::WebViewImpl(WebView *webView) : viewTag(-1), webView(webView) {
 WebViewImpl::~WebViewImpl() {
     removeWebViewJNI(viewTag);
     s_WebViewImpls.erase(viewTag);
+}
+
+void WebViewImpl::loadData(const Data &data, const std::string &MIMEType, const std::string &encoding, const std::string &baseURL) {
+    std::string dataString(reinterpret_cast<char *>(data.getBytes()), static_cast<unsigned int>(data.getSize()));
+    loadDataJNI(viewTag, dataString, MIMEType, encoding, baseURL);
+}
+
+void WebViewImpl::loadHTMLString(const std::string &string, const std::string &baseURL) {
+    loadHTMLStringJNI(viewTag, string, baseURL);
 }
 
 void WebViewImpl::loadUrl(const std::string &url) {

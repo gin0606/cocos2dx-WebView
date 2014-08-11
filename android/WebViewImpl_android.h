@@ -8,6 +8,7 @@
 #include <iosfwd>
 
 namespace cocos2d {
+class Data;
 class Renderer;
 class Mat4;
 
@@ -26,6 +27,10 @@ public:
     virtual ~WebViewImpl();
 
     void setJavascriptInterfaceScheme(const std::string &scheme);
+
+    void loadData(const cocos2d::Data &data, const std::string &MIMEType, const std::string &encoding, const std::string &baseURL);
+
+    void loadHTMLString(const std::string &string, const std::string &baseURL);
 
     void loadUrl(const std::string &url);
 

@@ -51,6 +51,15 @@ void WebViewImpl::setJavascriptInterfaceScheme(const std::string &scheme) {
     [uiWebViewWrapper setJavascriptInterfaceScheme:scheme];
 }
 
+void WebViewImpl::loadData(const Data &data, const std::string &MIMEType, const std::string &encoding, const std::string &baseURL) {
+    std::string dataString(reinterpret_cast<char *>(data.getBytes()), static_cast<unsigned int>(data.getSize()));
+    [uiWebViewWrapper loadData:dataString MIMEType:MIMEType textEncodingName:encoding baseURL:baseURL];
+}
+
+void WebViewImpl::loadHTMLString(const std::string &string, const std::string &baseURL) {
+    [uiWebViewWrapper loadHTMLString:string baseURL:baseURL];
+}
+
 void WebViewImpl::loadUrl(const std::string &url) {
     [uiWebViewWrapper loadUrl:url];
 }
