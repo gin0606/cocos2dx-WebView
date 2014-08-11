@@ -36,7 +36,5 @@ webView->setJavascriptInterfaceScheme("hoge-scheme");
 ---
 
 - [ ] `scalesPageToFit`(Android:`WebSettings.setSupportZoom`
-- [ ] `loadData:MIMEType:textEncodingName:baseURL:`(Android:`loadDataWithBaseURL(String baseUrl, String data, String mimeType, String encoding, String historyUrl)`)
-- [ ] `loadHTMLString:baseURL:`(Android:`loadData(String data, String mimeType, String encoding)`)
 - [ ] `stopLoading`
 - [ ] `reload`
