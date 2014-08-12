@@ -44,19 +44,19 @@ void WebView::loadFile(const std::string &fileName) {
     impl->loadFile(fileName);
 }
 
-bool cocos2d::plugin::WebView::canGoBack() {
+bool WebView::canGoBack() {
     return impl->canGoBack();
 }
 
-bool cocos2d::plugin::WebView::canGoForward() {
+bool WebView::canGoForward() {
     return impl->canGoForward();
 }
 
-void cocos2d::plugin::WebView::goBack() {
+void WebView::goBack() {
     impl->goBack();
 }
 
-void cocos2d::plugin::WebView::goForward() {
+void WebView::goForward() {
     impl->goForward();
 }
 

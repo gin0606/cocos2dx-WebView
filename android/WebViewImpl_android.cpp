@@ -13,7 +13,8 @@
 
 #define CLASS_NAME "org/cocos2dx/lib/Cocos2dxWebViewHelper"
 
-static int createWebViewJNI() {
+namespace {
+int createWebViewJNI() {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "createWebView", "()I")) {
         jint viewTag = t.env->CallStaticIntMethod(t.classID, t.methodID);
@@ -23,7 +24,7 @@ static int createWebViewJNI() {
     return -1;
 }
 
-static void removeWebViewJNI(int index) {
+void removeWebViewJNI(const int index) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "removeWebView", "(I)V")) {
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
@@ -31,7 +32,7 @@ static void removeWebViewJNI(int index) {
     }
 }
 
-static void setWebViewRectJNI(int index,int left,int top,int width,int height) {
+void setWebViewRectJNI(const int index, const int left, const int top, const int width, const int height) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setWebViewRect", "(IIIII)V")) {
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index, left, top, width, height);
@@ -39,18 +40,18 @@ static void setWebViewRectJNI(int index,int left,int top,int width,int height) {
     }
 }
 
-static void setJavascriptInterfaceSchemeJNI(int index, std::string scheme) {
-    CCLOG("setJavascriptInterfaceSchemeJNI");
+void setJavascriptInterfaceSchemeJNI(const int index, const std::string &scheme) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setJavascriptInterfaceScheme", "(ILjava/lang/String;)V")) {
-        CCLOG("setJavascriptInterfaceSchemeJNI");
         jstring jScheme = t.env->NewStringUTF(scheme.c_str());
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index, jScheme);
+
+        t.env->DeleteLocalRef(jScheme);
         t.env->DeleteLocalRef(t.classID);
     }
 }
 
-static void loadDataJNI(const int index, const std::string &data, const std::string &MIMEType, const std::string &encoding, const std::string &baseURL) {
+void loadDataJNI(const int index, const std::string &data, const std::string &MIMEType, const std::string &encoding, const std::string &baseURL) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "loadData", "(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V")) {
         jstring jData = t.env->NewStringUTF(data.c_str());
@@ -58,39 +59,51 @@ static void loadDataJNI(const int index, const std::string &data, const std::str
         jstring jEncoding = t.env->NewStringUTF(encoding.c_str());
         jstring jBaseURL = t.env->NewStringUTF(baseURL.c_str());
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index, jData, jMIMEType, jEncoding, jBaseURL);
+
+        t.env->DeleteLocalRef(jData);
+        t.env->DeleteLocalRef(jMIMEType);
+        t.env->DeleteLocalRef(jEncoding);
+        t.env->DeleteLocalRef(jBaseURL);
         t.env->DeleteLocalRef(t.classID);
     }
 }
 
-static void loadHTMLStringJNI(const int index, const std::string &string, const std::string &baseURL) {
+void loadHTMLStringJNI(const int index, const std::string &string, const std::string &baseURL) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "loadHTMLString", "(ILjava/lang/String;Ljava/lang/String;)V")) {
         jstring jString = t.env->NewStringUTF(string.c_str());
         jstring jBaseURL = t.env->NewStringUTF(baseURL.c_str());
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index, jString, jBaseURL);
+
+        t.env->DeleteLocalRef(jString);
+        t.env->DeleteLocalRef(jBaseURL);
         t.env->DeleteLocalRef(t.classID);
     }
 }
 
-static void loadUrlJNI(int index, std::string url) {
+void loadUrlJNI(const int index, const std::string &url) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "loadUrl", "(ILjava/lang/String;)V")) {
         jstring jUrl = t.env->NewStringUTF(url.c_str());
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index, jUrl);
+
+        t.env->DeleteLocalRef(jUrl);
         t.env->DeleteLocalRef(t.classID);
     }
 }
 
-static void loadFileJNI(int index, std::string filePath) {
+void loadFileJNI(const int index, const std::string &filePath) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "loadFile", "(ILjava/lang/String;)V")) {
         jstring jFilePath = t.env->NewStringUTF(filePath.c_str());
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index, jFilePath);
+
+        t.env->DeleteLocalRef(jFilePath);
         t.env->DeleteLocalRef(t.classID);
     }
 }
 
-static bool canGoBackJNI(int index) {
+bool canGoBackJNI(const int index) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "canGoBack", "(I)Z")) {
         jboolean ret = t.env->CallStaticBooleanMethod(t.classID, t.methodID, index);
@@ -100,7 +113,7 @@ static bool canGoBackJNI(int index) {
     return false;
 }
 
-static bool canGoForwardJNI(int index) {
+bool canGoForwardJNI(const int index) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "canGoForward", "(I)Z")) {
         jboolean ret = t.env->CallStaticBooleanMethod(t.classID, t.methodID, index);
@@ -110,7 +123,7 @@ static bool canGoForwardJNI(int index) {
     return false;
 }
 
-static void goBackJNI(int index) {
+void goBackJNI(const int index) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "goBack", "(I)V")) {
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
@@ -118,7 +131,7 @@ static void goBackJNI(int index) {
     }
 }
 
-static void goForwardJNI(int index) {
+void goForwardJNI(const int index) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "goForward", "(I)V")) {
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
@@ -126,16 +139,18 @@ static void goForwardJNI(int index) {
     }
 }
 
-static void evaluateJSJNI(int index, std::string js) {
+void evaluateJSJNI(const int index, const std::string &js) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "evaluateJS", "(ILjava/lang/String;)V")) {
         jstring jjs = t.env->NewStringUTF(js.c_str());
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index, jjs);
+
+        t.env->DeleteLocalRef(jjs);
         t.env->DeleteLocalRef(t.classID);
     }
 }
 
-static void setWebViewVisibleJNI(int index, bool visible) {
+void setWebViewVisibleJNI(const int index, const bool visible) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setVisible", "(IZ)V")) {
         t.env->CallStaticVoidMethod(t.classID, t.methodID, index, visible);
@@ -143,7 +158,6 @@ static void setWebViewVisibleJNI(int index, bool visible) {
     }
 }
 
-namespace {
 std::string getUrlStringByFileName(const std::string &fileName) {
     const std::string basePath("file:///android_asset/");
     std::string fullPath = cocos2d::FileUtils::getInstance()->fullPathForFilename(fileName);
@@ -158,7 +172,7 @@ std::string getUrlStringByFileName(const std::string &fileName) {
 
     return urlString;
 }
-}
+} // namespace
 
 namespace cocos2d {
 namespace plugin {

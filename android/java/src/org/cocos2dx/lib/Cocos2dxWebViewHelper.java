@@ -1,44 +1,31 @@
 package org.cocos2dx.lib;
 
-import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import junit.framework.Assert;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
-import java.lang.ref.WeakReference;
 
 public class Cocos2dxWebViewHelper {
     private static final String TAG = Cocos2dxWebViewHelper.class.getSimpleName();
-    private Cocos2dxActivity cocos2dxActivity;
-    private FrameLayout layout;
+    private static Handler handler;
+    private static Cocos2dxActivity cocos2dxActivity;
+    private static FrameLayout layout;
 
-    static private WebViewHandler handler;
     private static SparseArray<Cocos2dxWebView> webViews;
     private static int viewTag = 0;
 
-    private static final int kWebViewTaskCreate = 0;
-    private static final int kWebViewTaskRemove = 1;
-    private static final int kWebViewTaskSetRect = 2;
-    private static final int kWebViewTaskLoadURI = 3;
-    private static final int kWebViewTaskEvaluateJS = 4;
-    private static final int kWebViewTaskSetVisible = 5;
-    private static final int kWebViewTaskSetJsScheme = 6;
-    private static final int kWebViewTaskGoBack = 7;
-    private static final int kWebViewTaskGoForward = 8;
-    private static final int kWebViewTaskLoadData = 9;
+    public Cocos2dxWebViewHelper(FrameLayout layout) {
+        Cocos2dxWebViewHelper.layout = layout;
+        Cocos2dxWebViewHelper.handler = new Handler(Looper.myLooper());
 
-    public Cocos2dxWebViewHelper(Cocos2dxActivity activity, FrameLayout layout) {
-        this.cocos2dxActivity = activity;
-        this.layout = layout;
-
+        Cocos2dxWebViewHelper.cocos2dxActivity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
         Cocos2dxWebViewHelper.webViews = new SparseArray<Cocos2dxWebView>();
-        Cocos2dxWebViewHelper.handler = new WebViewHandler(Looper.myLooper(), this);
     }
 
     private static native boolean shouldStartLoading(int index, String message);
@@ -65,245 +52,207 @@ public class Cocos2dxWebViewHelper {
         onJsCallback(index, message);
     }
 
-    static class WebViewHandler extends Handler {
-        WeakReference<Cocos2dxWebViewHelper> helperReference;
-
-        WebViewHandler(Looper looper, Cocos2dxWebViewHelper webViewHelper) {
-            super(looper);
-            this.helperReference = new WeakReference<Cocos2dxWebViewHelper>(webViewHelper);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            Cocos2dxWebViewHelper helper = this.helperReference.get();
-            switch (msg.what) {
-                case kWebViewTaskCreate:
-                    helper._createWebView(msg.arg1);
-                    break;
-                case kWebViewTaskRemove:
-                    helper._removeWebView(msg.arg1);
-                    break;
-                case kWebViewTaskSetRect:
-                    Rect rect = (Rect) msg.obj;
-                    helper._setWebViewRect(msg.arg1, rect.left, rect.top, rect.right, rect.bottom);
-                    break;
-                case kWebViewTaskLoadURI:
-                    helper._loadUrl(msg.arg1, (String) msg.obj);
-                    break;
-                case kWebViewTaskEvaluateJS:
-                    helper._evaluateJS(msg.arg1, (String) msg.obj);
-                    break;
-                case kWebViewTaskSetVisible:
-                    helper._setVisible(msg.arg1, msg.arg2 != 0);
-                    break;
-                case kWebViewTaskSetJsScheme:
-                    helper._setJavascriptInterfaceScheme(msg.arg1, (String) msg.obj);
-                    break;
-                case kWebViewTaskGoBack:
-                    helper._goBack(msg.arg1);
-                    break;
-                case kWebViewTaskGoForward:
-                    helper._goForward(msg.arg1);
-                    break;
-                case kWebViewTaskLoadData: {
-                    String[] args = (String[]) msg.obj;
-                    helper._loadData(msg.arg1, args[0], args[1], args[2], args[3]);
-                    break;
-                }
-                default:
-                    Assert.fail("unknown message");
-                    break;
-            }
-            super.handleMessage(msg);
-        }
-    }
-
+    @SuppressWarnings("unused")
     public static int createWebView() {
-        Message msg = new Message();
-        msg.what = kWebViewTaskCreate;
-        msg.arg1 = viewTag;
-        handler.sendMessage(msg);
+        final int index = viewTag;
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = new Cocos2dxWebView(cocos2dxActivity, index);
+                FrameLayout.LayoutParams lParams = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT);
+                layout.addView(webView, lParams);
+
+                webViews.put(index, webView);
+            }
+        });
         return viewTag++;
     }
 
-    private void _createWebView(int index) {
-        Cocos2dxWebView webView = new Cocos2dxWebView(cocos2dxActivity, index);
-        FrameLayout.LayoutParams lParams = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(webView, lParams);
-
-        webViews.put(index, webView);
-    }
-
-    public static void removeWebView(int index) {
-        Message msg = new Message();
-        msg.what = kWebViewTaskRemove;
-        msg.arg1 = index;
-        handler.sendMessage(msg);
-    }
-
-    private void _removeWebView(int index) {
-        Cocos2dxWebView webView = webViews.get(index);
-        if (webView != null) {
-            webViews.remove(index);
-            layout.removeView(webView);
-        }
-    }
-
-    public static void setVisible(int index, boolean visible) {
-        Message msg = new Message();
-        msg.what = kWebViewTaskSetVisible;
-        msg.arg1 = index;
-        msg.arg2 = visible ? 1 : 0;
-        handler.sendMessage(msg);
-    }
-
-    private void _setVisible(int index, boolean visible) {
-        Cocos2dxWebView webView = webViews.get(index);
-        if (webView != null) {
-            if (visible) {
-                webView.setVisibility(View.VISIBLE);
-            } else {
-                webView.setVisibility(View.GONE);
+    @SuppressWarnings("unused")
+    public static void removeWebView(final int index) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webViews.remove(index);
+                    layout.removeView(webView);
+                }
             }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    public static void setVisible(final int index, final boolean visible) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.setVisibility(visible ? View.VISIBLE : View.GONE);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    public static void setWebViewRect(final int index, final int left, final int top, final int maxWidth, final int maxHeight) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.setWebViewRect(left, top, maxWidth, maxHeight);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    public static void setJavascriptInterfaceScheme(final int index, final String scheme) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.setJavascriptInterfaceScheme(scheme);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    public static void loadData(final int index, final String data, final String mimeType, final String encoding, final String baseURL) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.loadDataWithBaseURL(baseURL, data, mimeType, encoding, null);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    public static void loadHTMLString(final int index, final String htmlString, final String mimeType, final String encoding) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.loadData(htmlString, mimeType, encoding);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    public static void loadUrl(final int index, final String url) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.loadUrl(url);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("unused")
+    public static void loadFile(final int index, final String filePath) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.loadUrl(filePath);
+                }
+            }
+        });
+    }
+
+    public static <T> T callInMainThread(Callable<T> call) throws ExecutionException, InterruptedException {
+        FutureTask<T> task = new FutureTask<T>(call);
+        handler.post(task);
+        return task.get();
+    }
+
+    @SuppressWarnings("unused")
+    public static boolean canGoBack(final int index) {
+        Callable<Boolean> callable = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                Cocos2dxWebView webView = webViews.get(index);
+                return webView != null && webView.canGoBack();
+            }
+        };
+        try {
+            return callInMainThread(callable);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
         }
     }
 
-    public static void setWebViewRect(int index, int left, int top, int maxWidth, int maxHeight) {
-        Message msg = new Message();
-        msg.what = kWebViewTaskSetRect;
-        msg.arg1 = index;
-        msg.obj = new Rect(left, top, maxWidth, maxHeight);
-        handler.sendMessage(msg);
-    }
-
-    private void _setWebViewRect(int index, int left, int top, int maxWidth, int maxHeight) {
-        Cocos2dxWebView webView = webViews.get(index);
-        if (webView != null) {
-            webView.setWebViewRect(left, top, maxWidth, maxHeight);
+    @SuppressWarnings("unused")
+    public static boolean canGoForward(final int index) {
+        Callable<Boolean> callable = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                Cocos2dxWebView webView = webViews.get(index);
+                return webView != null && webView.canGoForward();
+            }
+        };
+        try {
+            return callInMainThread(callable);
+        } catch (ExecutionException e) {
+            return false;
+        } catch (InterruptedException e) {
+            return false;
         }
     }
 
-    public static void setJavascriptInterfaceScheme(int index, String scheme) {
-        Message msg = new Message();
-        msg.what = kWebViewTaskSetJsScheme;
-        msg.arg1 = index;
-        msg.obj = scheme;
-        handler.sendMessage(msg);
+    @SuppressWarnings("unused")
+    public static void goBack(final int index) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.goBack();
+                }
+            }
+        });
     }
 
-    private void _setJavascriptInterfaceScheme(int index, String scheme) {
-        Log.d(TAG, "_setJavascriptInterfaceScheme");
-        Cocos2dxWebView webView = webViews.get(index);
-        if (webView != null) {
-            webView.setJavascriptInterfaceScheme(scheme);
-        }
+    @SuppressWarnings("unused")
+    public static void goForward(final int index) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.goForward();
+                }
+            }
+        });
     }
 
-    public static void loadData(int index, String data, String mimeType, String encoding, String baseURL) {
-        String[] args = {data, mimeType, encoding, baseURL};
-        Message msg = new Message();
-        msg.what = kWebViewTaskLoadData;
-        msg.arg1 = index;
-        msg.obj = args;
-        handler.sendMessage(msg);
-    }
-
-    private void _loadData(int index, String data, String mimeType, String encoding, String baseURL) {
-        Cocos2dxWebView webView = webViews.get(index);
-        if (webView != null) {
-            webView.loadDataWithBaseURL(baseURL, data, mimeType, encoding, null);
-        }
-    }
-
-    public static void loadHTMLString(int index, String htmlString, String mimeType, String encoding) {
-        Cocos2dxWebView webView = webViews.get(index);
-        if (webView != null) {
-            webView.loadData(htmlString, mimeType, encoding);
-        }
-    }
-
-    public static void loadUrl(int index, String url) {
-        Message msg = new Message();
-        msg.what = kWebViewTaskLoadURI;
-        msg.arg1 = index;
-        msg.obj = url;
-        handler.sendMessage(msg);
-    }
-
-    private void _loadUrl(int index, String url) {
-        Cocos2dxWebView webView = webViews.get(index);
-        if (webView != null) {
-            webView.loadUrl(url);
-        }
-    }
-
-    public static void loadFile(int index, String filePath) {
-        Message msg = new Message();
-        msg.what = kWebViewTaskLoadURI;
-        msg.arg1 = index;
-        msg.obj = filePath;
-        handler.sendMessage(msg);
-    }
-
-    private void _loadFile(int index, String filePath) {
-        Cocos2dxWebView webView = webViews.get(index);
-        if (webView != null) {
-            webView.loadUrl(filePath);
-        }
-    }
-
-    public static boolean canGoBack(int index) {
-        Cocos2dxWebView webView = webViews.get(index);
-        return webView != null && webView.canGoBack();
-    }
-
-    public static boolean canGoForward(int index) {
-        Cocos2dxWebView webView = webViews.get(index);
-        return webView != null && webView.canGoForward();
-    }
-
-    public static void goBack(int index) {
-        Message msg = new Message();
-        msg.what = kWebViewTaskGoBack;
-        msg.arg1 = index;
-        handler.sendMessage(msg);
-    }
-
-    private void _goBack(int index) {
-        Cocos2dxWebView webView = webViews.get(index);
-        if (webView != null) {
-            webView.goBack();
-        }
-    }
-
-    public static void goForward(int index) {
-        Message msg = new Message();
-        msg.what = kWebViewTaskGoForward;
-        msg.arg1 = index;
-        handler.sendMessage(msg);
-    }
-
-    private void _goForward(int index) {
-        Cocos2dxWebView webView = webViews.get(index);
-        if (webView != null) {
-            webView.goForward();
-        }
-    }
-
-    public static void evaluateJS(int index, String js) {
-        Message msg = new Message();
-        msg.what = kWebViewTaskEvaluateJS;
-        msg.arg1 = index;
-        msg.obj = js;
-        handler.sendMessage(msg);
-    }
-
-    private void _evaluateJS(int index, String js) {
-        Cocos2dxWebView webView = webViews.get(index);
-        if (webView != null) {
-            webView.loadUrl("javascript:" + js);
-        }
+    @SuppressWarnings("unused")
+    public static void evaluateJS(final int index, final String js) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.loadUrl("javascript:" + js);
+                }
+            }
+        });
     }
 }
