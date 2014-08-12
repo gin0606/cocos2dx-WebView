@@ -103,6 +103,22 @@ void loadFileJNI(const int index, const std::string &filePath) {
     }
 }
 
+void stopLoadingJNI(const int index) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "stopLoading", "(I)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
+void reloadJNI(const int index) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "reload", "(I)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index);
+        t.env->DeleteLocalRef(t.classID);
+    }
+}
+
 bool canGoBackJNI(const int index) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "canGoBack", "(I)Z")) {
@@ -204,6 +220,14 @@ void WebViewImpl::loadUrl(const std::string &url) {
 void WebViewImpl::loadFile(const std::string &fileName) {
     auto fullPath = getUrlStringByFileName(fileName);
     loadFileJNI(viewTag, fullPath);
+}
+
+void WebViewImpl::stopLoading() {
+    stopLoadingJNI(viewTag);
+}
+
+void WebViewImpl::reload() {
+    reloadJNI(viewTag);
 }
 
 bool WebViewImpl::canGoBack() {

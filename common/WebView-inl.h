@@ -44,6 +44,14 @@ void WebView::loadFile(const std::string &fileName) {
     impl->loadFile(fileName);
 }
 
+void WebView::stopLoading() {
+    impl->stopLoading();
+}
+
+void WebView::reload() {
+    impl->reload();
+}
+
 bool WebView::canGoBack() {
     return impl->canGoBack();
 }

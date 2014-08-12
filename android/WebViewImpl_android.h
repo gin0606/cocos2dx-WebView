@@ -36,6 +36,10 @@ public:
 
     void loadFile(const std::string &fileName);
 
+    void stopLoading();
+
+    void reload();
+
     bool canGoBack();
 
     bool canGoForward();

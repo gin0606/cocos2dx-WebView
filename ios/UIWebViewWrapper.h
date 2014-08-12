@@ -33,6 +33,10 @@
 
 - (void)loadFile:(const std::string &)filePath;
 
+- (void)stopLoading;
+
+- (void)reload;
+
 - (void)evaluateJS:(const std::string &)js;
 
 - (void)goBack;

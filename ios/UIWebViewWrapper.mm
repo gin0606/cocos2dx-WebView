@@ -93,6 +93,14 @@
     [self.uiWebView loadRequest:request];
 }
 
+- (void)stopLoading {
+    [self.uiWebView stopLoading];
+}
+
+- (void)reload {
+    [self.uiWebView reload];
+}
+
 - (BOOL)canGoForward {
     return self.uiWebView.canGoForward;
 }

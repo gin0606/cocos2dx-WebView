@@ -69,6 +69,14 @@ void WebViewImpl::loadFile(const std::string &fileName) {
     [uiWebViewWrapper loadFile:fullPath];
 }
 
+void WebViewImpl::stopLoading() {
+    [uiWebViewWrapper stopLoading];
+}
+
+void WebViewImpl::reload() {
+    [uiWebViewWrapper reload];
+}
+
 bool WebViewImpl::canGoBack() {
     return uiWebViewWrapper.canGoBack;
 }

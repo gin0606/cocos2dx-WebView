@@ -53,6 +53,16 @@ public:
     void loadUrl(const std::string &url);
     void loadFile(const std::string &fileName);
 
+    /**
+    * Stops the current load.
+    */
+    void stopLoading();
+
+    /**
+    * Reloads the current URL.
+    */
+    void reload();
+
     bool canGoBack();
 
     bool canGoForward();

@@ -175,6 +175,31 @@ public class Cocos2dxWebViewHelper {
         });
     }
 
+    public static void stopLoading(final int index) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.stopLoading();
+                }
+            }
+        });
+
+    }
+
+    public static void reload(final int index) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.reload();
+                }
+            }
+        });
+    }
+
     public static <T> T callInMainThread(Callable<T> call) throws ExecutionException, InterruptedException {
         FutureTask<T> task = new FutureTask<T>(call);
         handler.post(task);
