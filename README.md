@@ -36,5 +36,3 @@ webView->setJavascriptInterfaceScheme("hoge-scheme");
 ---
 
 - [ ] `scalesPageToFit`(Android:`WebSettings.setSupportZoom`
-- [ ] `stopLoading`
-- [ ] `reload`
