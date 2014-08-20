@@ -60,8 +60,8 @@ public:
     static void onJsCallback(const int viewTag, const std::string &message);
 
 private:
-    int viewTag;
-    WebView *webView;
+    int _viewTag;
+    WebView *_webView;
 };
 
 } // namespace cocos2d

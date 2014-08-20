@@ -194,70 +194,70 @@ namespace cocos2d {
 namespace plugin {
 static std::unordered_map<int, cocos2d::plugin::WebViewImpl*> s_WebViewImpls;
 
-WebViewImpl::WebViewImpl(WebView *webView) : viewTag(-1), webView(webView) {
-    viewTag = createWebViewJNI();
-    s_WebViewImpls[viewTag] = this;
+WebViewImpl::WebViewImpl(WebView *webView) : _viewTag(-1), _webView(webView) {
+    _viewTag = createWebViewJNI();
+    s_WebViewImpls[_viewTag] = this;
 }
 
 WebViewImpl::~WebViewImpl() {
-    removeWebViewJNI(viewTag);
-    s_WebViewImpls.erase(viewTag);
+    removeWebViewJNI(_viewTag);
+    s_WebViewImpls.erase(_viewTag);
 }
 
 void WebViewImpl::loadData(const Data &data, const std::string &MIMEType, const std::string &encoding, const std::string &baseURL) {
     std::string dataString(reinterpret_cast<char *>(data.getBytes()), static_cast<unsigned int>(data.getSize()));
-    loadDataJNI(viewTag, dataString, MIMEType, encoding, baseURL);
+    loadDataJNI(_viewTag, dataString, MIMEType, encoding, baseURL);
 }
 
 void WebViewImpl::loadHTMLString(const std::string &string, const std::string &baseURL) {
-    loadHTMLStringJNI(viewTag, string, baseURL);
+    loadHTMLStringJNI(_viewTag, string, baseURL);
 }
 
 void WebViewImpl::loadUrl(const std::string &url) {
-    loadUrlJNI(viewTag, url);
+    loadUrlJNI(_viewTag, url);
 }
 
 void WebViewImpl::loadFile(const std::string &fileName) {
     auto fullPath = getUrlStringByFileName(fileName);
-    loadFileJNI(viewTag, fullPath);
+    loadFileJNI(_viewTag, fullPath);
 }
 
 void WebViewImpl::stopLoading() {
-    stopLoadingJNI(viewTag);
+    stopLoadingJNI(_viewTag);
 }
 
 void WebViewImpl::reload() {
-    reloadJNI(viewTag);
+    reloadJNI(_viewTag);
 }
 
 bool WebViewImpl::canGoBack() {
-    return canGoBackJNI(viewTag);
+    return canGoBackJNI(_viewTag);
 }
 
 bool WebViewImpl::canGoForward() {
-    return canGoForwardJNI(viewTag);
+    return canGoForwardJNI(_viewTag);
 }
 
 void WebViewImpl::goBack() {
-    goBackJNI(viewTag);
+    goBackJNI(_viewTag);
 }
 
 void WebViewImpl::goForward() {
-    goForwardJNI(viewTag);
+    goForwardJNI(_viewTag);
 }
 
 void WebViewImpl::setJavascriptInterfaceScheme(const std::string &scheme) {
-    setJavascriptInterfaceSchemeJNI(viewTag, scheme);
+    setJavascriptInterfaceSchemeJNI(_viewTag, scheme);
 }
 
 void WebViewImpl::evaluateJS(const std::string &js) {
-    evaluateJSJNI(viewTag, js);
+    evaluateJSJNI(_viewTag, js);
 }
 
 bool WebViewImpl::shouldStartLoading(const int viewTag, const std::string &url) {
     auto it = s_WebViewImpls.find(viewTag);
     if (it != s_WebViewImpls.end()) {
-        auto webView = s_WebViewImpls[viewTag]->webView;
+        auto webView = s_WebViewImpls[viewTag]->_webView;
         if (webView->shouldStartLoading) {
             return webView->shouldStartLoading(webView, url);
         }
@@ -268,7 +268,7 @@ bool WebViewImpl::shouldStartLoading(const int viewTag, const std::string &url) 
 void WebViewImpl::didFinishLoading(const int viewTag, const std::string &url){
     auto it = s_WebViewImpls.find(viewTag);
     if (it != s_WebViewImpls.end()) {
-        auto webView = s_WebViewImpls[viewTag]->webView;
+        auto webView = s_WebViewImpls[viewTag]->_webView;
         if (webView->didFinishLoading) {
             webView->didFinishLoading(webView, url);
         }
@@ -278,7 +278,7 @@ void WebViewImpl::didFinishLoading(const int viewTag, const std::string &url){
 void WebViewImpl::didFailLoading(const int viewTag, const std::string &url){
     auto it = s_WebViewImpls.find(viewTag);
     if (it != s_WebViewImpls.end()) {
-        auto webView = s_WebViewImpls[viewTag]->webView;
+        auto webView = s_WebViewImpls[viewTag]->_webView;
         if (webView->didFailLoading) {
             webView->didFailLoading(webView, url);
         }
@@ -288,7 +288,7 @@ void WebViewImpl::didFailLoading(const int viewTag, const std::string &url){
 void WebViewImpl::onJsCallback(const int viewTag, const std::string &message){
     auto it = s_WebViewImpls.find(viewTag);
     if (it != s_WebViewImpls.end()) {
-        auto webView = s_WebViewImpls[viewTag]->webView;
+        auto webView = s_WebViewImpls[viewTag]->_webView;
         if (webView->onJsCallback) {
             webView->onJsCallback(webView, message);
         }
@@ -303,20 +303,20 @@ void WebViewImpl::draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transfo
 
         auto winSize = directorInstance->getWinSize();
 
-        auto leftBottom = this->webView->convertToWorldSpace(cocos2d::Point::ZERO);
-        auto rightTop = this->webView->convertToWorldSpace(cocos2d::Point(this->webView->getContentSize().width,this->webView->getContentSize().height));
+        auto leftBottom = this->_webView->convertToWorldSpace(cocos2d::Point::ZERO);
+        auto rightTop = this->_webView->convertToWorldSpace(cocos2d::Point(this->_webView->getContentSize().width,this->_webView->getContentSize().height));
 
         auto uiLeft = frameSize.width / 2 + (leftBottom.x - winSize.width / 2 ) * glView->getScaleX();
         auto uiTop = frameSize.height /2 - (rightTop.y - winSize.height / 2) * glView->getScaleY();
 
-        setWebViewRectJNI(viewTag,uiLeft,uiTop,
+        setWebViewRectJNI(_viewTag,uiLeft,uiTop,
                         (rightTop.x - leftBottom.x) * glView->getScaleX(),
                         (rightTop.y - leftBottom.y) * glView->getScaleY());
     }
 }
 
 void WebViewImpl::setVisible(bool visible) {
-    setWebViewVisibleJNI(viewTag, visible);
+    setWebViewVisibleJNI(_viewTag, visible);
 }
 } // namespace cocos2d
 } // namespace plugin

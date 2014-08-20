@@ -51,8 +51,8 @@ public:
     virtual void setVisible(bool visible);
 
 private:
-    UIWebViewWrapper *uiWebViewWrapper;
-    WebView *webView;
+    UIWebViewWrapper *_uiWebViewWrapper;
+    WebView *_webView;
 };
 
 } // namespace cocos2d

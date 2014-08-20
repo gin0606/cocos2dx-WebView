@@ -8,11 +8,11 @@
 
 namespace cocos2d {
 namespace plugin {
-WebView::WebView() : impl(new WebViewImpl(this)) {
+WebView::WebView() : _impl(new WebViewImpl(this)) {
 }
 
 WebView::~WebView() {
-    delete impl;
+    delete _impl;
 }
 
 WebView *WebView::create() {
@@ -25,61 +25,61 @@ WebView *WebView::create() {
 }
 
 void WebView::setJavascriptInterfaceScheme(const std::string &scheme) {
-    impl->setJavascriptInterfaceScheme(scheme);
+    _impl->setJavascriptInterfaceScheme(scheme);
 }
 
 void WebView::loadData(const cocos2d::Data &data, const std::string &MIMEType, const std::string &encoding, const std::string &baseURL) {
-    impl->loadData(data, MIMEType, encoding, baseURL);
+    _impl->loadData(data, MIMEType, encoding, baseURL);
 }
 
 void WebView::loadHTMLString(const std::string &string, const std::string &baseURL) {
-    impl->loadHTMLString(string, baseURL);
+    _impl->loadHTMLString(string, baseURL);
 }
 
 void WebView::loadUrl(const std::string &url) {
-    impl->loadUrl(url);
+    _impl->loadUrl(url);
 }
 
 void WebView::loadFile(const std::string &fileName) {
-    impl->loadFile(fileName);
+    _impl->loadFile(fileName);
 }
 
 void WebView::stopLoading() {
-    impl->stopLoading();
+    _impl->stopLoading();
 }
 
 void WebView::reload() {
-    impl->reload();
+    _impl->reload();
 }
 
 bool WebView::canGoBack() {
-    return impl->canGoBack();
+    return _impl->canGoBack();
 }
 
 bool WebView::canGoForward() {
-    return impl->canGoForward();
+    return _impl->canGoForward();
 }
 
 void WebView::goBack() {
-    impl->goBack();
+    _impl->goBack();
 }
 
 void WebView::goForward() {
-    impl->goForward();
+    _impl->goForward();
 }
 
 void WebView::evaluateJS(const std::string &js) {
-    impl->evaluateJS(js);
+    _impl->evaluateJS(js);
 }
 
 void WebView::draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transform, uint32_t flags) {
     cocos2d::ui::Widget::draw(renderer, transform, flags);
-    impl->draw(renderer, transform, flags);
+    _impl->draw(renderer, transform, flags);
 }
 
 void WebView::setVisible(bool visible) {
     Node::setVisible(visible);
-    impl->setVisible(visible);
+    _impl->setVisible(visible);
 }
 } // namespace cocos2d
 } // namespace plugin

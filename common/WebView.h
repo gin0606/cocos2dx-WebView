@@ -130,7 +130,7 @@ public:
     virtual void setVisible(bool visible) override;
 
 private:
-    cocos2d::plugin::WebViewImpl *impl;
+    cocos2d::plugin::WebViewImpl *_impl;
 };
 } // namespace cocos2d
 } // namespace plugin

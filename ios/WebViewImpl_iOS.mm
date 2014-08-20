@@ -17,84 +17,84 @@ namespace cocos2d {
 namespace plugin {
 
 WebViewImpl::WebViewImpl(WebView *webView)
-        : uiWebViewWrapper([UIWebViewWrapper webViewWrapper]), webView(webView) {
-    [uiWebViewWrapper retain];
-    uiWebViewWrapper.shouldStartLoading = [this](std::string url) {
-        if (this->webView->shouldStartLoading) {
-            return this->webView->shouldStartLoading(this->webView, url);
+        : _uiWebViewWrapper([UIWebViewWrapper webViewWrapper]), _webView(webView) {
+    [_uiWebViewWrapper retain];
+    _uiWebViewWrapper.shouldStartLoading = [this](std::string url) {
+        if (this->_webView->shouldStartLoading) {
+            return this->_webView->shouldStartLoading(this->_webView, url);
         }
         return true;
     };
-    uiWebViewWrapper.didFinishLoading = [this](std::string url) {
-        if (this->webView->didFinishLoading) {
-            this->webView->didFinishLoading(this->webView, url);
+    _uiWebViewWrapper.didFinishLoading = [this](std::string url) {
+        if (this->_webView->didFinishLoading) {
+            this->_webView->didFinishLoading(this->_webView, url);
         }
     };
-    uiWebViewWrapper.didFailLoading = [this](std::string url) {
-        if (this->webView->didFailLoading) {
-            this->webView->didFailLoading(this->webView, url);
+    _uiWebViewWrapper.didFailLoading = [this](std::string url) {
+        if (this->_webView->didFailLoading) {
+            this->_webView->didFailLoading(this->_webView, url);
         }
     };
-    uiWebViewWrapper.onJsCallback = [this](std::string url) {
-        if (this->webView->onJsCallback) {
-            this->webView->onJsCallback(this->webView, url);
+    _uiWebViewWrapper.onJsCallback = [this](std::string url) {
+        if (this->_webView->onJsCallback) {
+            this->_webView->onJsCallback(this->_webView, url);
         }
     };
 }
 
 WebViewImpl::~WebViewImpl() {
-    [uiWebViewWrapper release];
-    uiWebViewWrapper = nullptr;
+    [_uiWebViewWrapper release];
+    _uiWebViewWrapper = nullptr;
 }
 
 void WebViewImpl::setJavascriptInterfaceScheme(const std::string &scheme) {
-    [uiWebViewWrapper setJavascriptInterfaceScheme:scheme];
+    [_uiWebViewWrapper setJavascriptInterfaceScheme:scheme];
 }
 
 void WebViewImpl::loadData(const Data &data, const std::string &MIMEType, const std::string &encoding, const std::string &baseURL) {
     std::string dataString(reinterpret_cast<char *>(data.getBytes()), static_cast<unsigned int>(data.getSize()));
-    [uiWebViewWrapper loadData:dataString MIMEType:MIMEType textEncodingName:encoding baseURL:baseURL];
+    [_uiWebViewWrapper loadData:dataString MIMEType:MIMEType textEncodingName:encoding baseURL:baseURL];
 }
 
 void WebViewImpl::loadHTMLString(const std::string &string, const std::string &baseURL) {
-    [uiWebViewWrapper loadHTMLString:string baseURL:baseURL];
+    [_uiWebViewWrapper loadHTMLString:string baseURL:baseURL];
 }
 
 void WebViewImpl::loadUrl(const std::string &url) {
-    [uiWebViewWrapper loadUrl:url];
+    [_uiWebViewWrapper loadUrl:url];
 }
 
 void WebViewImpl::loadFile(const std::string &fileName) {
     auto fullPath = cocos2d::FileUtils::getInstance()->fullPathForFilename(fileName);
-    [uiWebViewWrapper loadFile:fullPath];
+    [_uiWebViewWrapper loadFile:fullPath];
 }
 
 void WebViewImpl::stopLoading() {
-    [uiWebViewWrapper stopLoading];
+    [_uiWebViewWrapper stopLoading];
 }
 
 void WebViewImpl::reload() {
-    [uiWebViewWrapper reload];
+    [_uiWebViewWrapper reload];
 }
 
 bool WebViewImpl::canGoBack() {
-    return uiWebViewWrapper.canGoBack;
+    return _uiWebViewWrapper.canGoBack;
 }
 
 bool WebViewImpl::canGoForward() {
-    return uiWebViewWrapper.canGoForward;
+    return _uiWebViewWrapper.canGoForward;
 }
 
 void WebViewImpl::goBack() {
-    [uiWebViewWrapper goBack];
+    [_uiWebViewWrapper goBack];
 }
 
 void WebViewImpl::goForward() {
-    [uiWebViewWrapper goForward];
+    [_uiWebViewWrapper goForward];
 }
 
 void WebViewImpl::evaluateJS(const std::string &js) {
-    [uiWebViewWrapper evaluateJS:js];
+    [_uiWebViewWrapper evaluateJS:js];
 }
 
 void WebViewImpl::draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transform, uint32_t flags) {
@@ -106,15 +106,15 @@ void WebViewImpl::draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transfo
 
         auto winSize = direcrot->getWinSize();
 
-        auto leftBottom = this->webView->convertToWorldSpace(cocos2d::Vec2::ZERO);
-        auto rightTop = this->webView->convertToWorldSpace(cocos2d::Vec2(this->webView->getContentSize().width, this->webView->getContentSize().height));
+        auto leftBottom = this->_webView->convertToWorldSpace(cocos2d::Vec2::ZERO);
+        auto rightTop = this->_webView->convertToWorldSpace(cocos2d::Vec2(this->_webView->getContentSize().width, this->_webView->getContentSize().height));
 
         auto x = (frameSize.width / 2 + (leftBottom.x - winSize.width / 2) * glView->getScaleX()) / scaleFactor;
         auto y = (frameSize.height / 2 - (rightTop.y - winSize.height / 2) * glView->getScaleY()) / scaleFactor;
         auto width = (rightTop.x - leftBottom.x) * glView->getScaleX() / scaleFactor;
         auto height = (rightTop.y - leftBottom.y) * glView->getScaleY() / scaleFactor;
 
-        [uiWebViewWrapper setFrameWithX:x
+        [_uiWebViewWrapper setFrameWithX:x
                                       y:y
                                   width:width
                                  height:height];
@@ -122,7 +122,7 @@ void WebViewImpl::draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transfo
 }
 
 void WebViewImpl::setVisible(bool visible) {
-    [uiWebViewWrapper setVisible:visible];
+    [_uiWebViewWrapper setVisible:visible];
 }
 } // namespace cocos2d
 } // namespace plugin
