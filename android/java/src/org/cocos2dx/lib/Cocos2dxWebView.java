@@ -2,10 +2,12 @@ package org.cocos2dx.lib;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
+import java.lang.reflect.Method;
 import java.net.URI;
 
 public class Cocos2dxWebView extends WebView {
@@ -32,7 +34,13 @@ public class Cocos2dxWebView extends WebView {
         this.getSettings().setJavaScriptEnabled(true);
 
         // `searchBoxJavaBridge_` has big security risk. http://jvn.jp/en/jp/JVN53768697
-        this.removeJavascriptInterface("searchBoxJavaBridge_");
+        try {
+            Method method = this.getClass().getMethod("removeJavascriptInterface", new Class[]{String.class});
+            method.invoke(this, "searchBoxJavaBridge_");
+        } catch (ReflectiveOperationException e) {
+            Log.d(TAG, "This API level do not support `removeJavascriptInterface`");
+        }
+
         this.setWebViewClient(new Cocos2dxWebViewClient());
     }
 
