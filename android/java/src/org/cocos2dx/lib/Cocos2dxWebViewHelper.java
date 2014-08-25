@@ -280,4 +280,17 @@ public class Cocos2dxWebViewHelper {
             }
         });
     }
+
+    @SuppressWarnings("unused")
+    public static void setScalesPageToFit(final int index, final boolean scalesPageToFit) {
+        cocos2dxActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxWebView webView = webViews.get(index);
+                if (webView != null) {
+                    webView.setScalesPageToFit(scalesPageToFit);
+                }
+            }
+        });
+    }
 }

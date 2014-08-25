@@ -72,6 +72,10 @@ void WebView::evaluateJS(const std::string &js) {
     _impl->evaluateJS(js);
 }
 
+void WebView::setScalesPageToFit(bool const scalesPageToFit) {
+    _impl->setScalesPageToFit(scalesPageToFit);
+}
+
 void WebView::draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transform, uint32_t flags) {
     cocos2d::ui::Widget::draw(renderer, transform, flags);
     _impl->draw(renderer, transform, flags);

@@ -166,6 +166,14 @@ void evaluateJSJNI(const int index, const std::string &js) {
     }
 }
 
+void setScalesPageToFitJNI(const int index, const bool scalesPageToFit) {
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setScalesPageToFit", "(IZ)V")) {
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, index, scalesPageToFit);
+        t.env->DeleteLocalRef(t.classID);
+  }
+}
+
 void setWebViewVisibleJNI(const int index, const bool visible) {
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "setVisible", "(IZ)V")) {
@@ -252,6 +260,10 @@ void WebViewImpl::setJavascriptInterfaceScheme(const std::string &scheme) {
 
 void WebViewImpl::evaluateJS(const std::string &js) {
     evaluateJSJNI(_viewTag, js);
+}
+
+void WebViewImpl::setScalesPageToFit(const bool scalesPageToFit) {
+    setScalesPageToFitJNI(_viewTag, scalesPageToFit);
 }
 
 bool WebViewImpl::shouldStartLoading(const int viewTag, const std::string &url) {

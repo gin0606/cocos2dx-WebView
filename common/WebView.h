@@ -125,6 +125,11 @@ public:
     */
     void evaluateJS(const std::string &js);
 
+    /**
+    * Set WebView should support zooming. The default value is false.
+    */
+    void setScalesPageToFit(const bool scalesPageToFit);
+
     virtual void draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transform, uint32_t flags) override;
 
     virtual void setVisible(bool visible) override;

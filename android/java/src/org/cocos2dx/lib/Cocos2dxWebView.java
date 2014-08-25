@@ -26,6 +26,9 @@ public class Cocos2dxWebView extends WebView {
 
         this.setFocusable(true);
         this.setFocusableInTouchMode(true);
+
+        this.getSettings().setSupportZoom(false);
+
         this.getSettings().setJavaScriptEnabled(true);
 
         // `searchBoxJavaBridge_` has big security risk. http://jvn.jp/en/jp/JVN53768697
@@ -35,6 +38,10 @@ public class Cocos2dxWebView extends WebView {
 
     public void setJavascriptInterfaceScheme(String scheme) {
         this.jsScheme = scheme != null ? scheme : "";
+    }
+
+    public void setScalesPageToFit(boolean scalesPageToFit) {
+        this.getSettings().setSupportZoom(scalesPageToFit);
     }
 
     class Cocos2dxWebViewClient extends WebViewClient {

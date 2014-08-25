@@ -122,6 +122,10 @@
     [self.uiWebView stringByEvaluatingJavaScriptFromString:@(js.c_str())];
 }
 
+- (void)setScalesPageToFit:(const bool)scalesPageToFit {
+    self.uiWebView.scalesPageToFit = scalesPageToFit;
+}
+
 #pragma mark - UIWebViewDelegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     NSString *url = [[request URL] absoluteString];

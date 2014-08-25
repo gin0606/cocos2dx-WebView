@@ -97,6 +97,10 @@ void WebViewImpl::evaluateJS(const std::string &js) {
     [_uiWebViewWrapper evaluateJS:js];
 }
 
+void WebViewImpl::setScalesPageToFit(const bool scalesPageToFit) {
+    [_uiWebViewWrapper setScalesPageToFit:scalesPageToFit];
+}
+
 void WebViewImpl::draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transform, uint32_t flags) {
     if (flags & cocos2d::Node::FLAGS_TRANSFORM_DIRTY) {
         auto direcrot = cocos2d::Director::getInstance();

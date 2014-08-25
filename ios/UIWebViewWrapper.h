@@ -42,4 +42,6 @@
 - (void)goBack;
 
 - (void)goForward;
+
+- (void)setScalesPageToFit:(const bool)scalesPageToFit;
 @end
