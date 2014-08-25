@@ -1,6 +1,6 @@
 # Require
 * cocos2d-x ver3.0(or greater
-* android-11(or greater
+* android-10(or greater
 
 # How to setup
 ## iOS
@@ -32,7 +32,3 @@ this->addChild(webView);
 // if set js scheme. call `onJsCallback` when load `hoge-scheme://foo`.
 webView->setJavascriptInterfaceScheme("hoge-scheme");
 ```
-
----
-
-- [ ] `scalesPageToFit`(Android:`WebSettings.setSupportZoom`
