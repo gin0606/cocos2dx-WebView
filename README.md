@@ -1,3 +1,6 @@
+# DEPRECATED
+This WebView merged into cocos2d-x3.3!
+
 # Require
 * cocos2d-x ver3.0(or greater
 * android-10(or greater
