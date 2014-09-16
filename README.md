@@ -20,7 +20,7 @@ open /path/to/proj.android/jni/Android.mk
 ```
 
 ```diff
-+LOCAL_WHOLE_STATIC_LIBRARIES += cocos_webview_plugin__static
++LOCAL_WHOLE_STATIC_LIBRARIES += cocos_webview_plugin_static
 +$(call import-module,../libs/cocos2dx-WebView/android)
 ```
 
