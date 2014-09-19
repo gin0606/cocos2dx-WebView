@@ -17,8 +17,8 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
 LOCAL_EXPORT_C_INCLUDES += $(LOCAL_PATH)/../common
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../cocos2d/cocos/2d \
-                    $(LOCAL_PATH)/../../../cocos2d/platform \
-                    $(LOCAL_PATH)/../../../cocos2d/platform/android \
+                    $(LOCAL_PATH)/../../../cocos2d/cocos/platform \
+                    $(LOCAL_PATH)/../../../cocos2d/cocos/platform/android \
                     $(LOCAL_PATH)/../common \
                     $(LOCAL_PATH)/ \
                     $(LOCAL_PATH)/jni
