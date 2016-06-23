@@ -1,5 +1,7 @@
-# DEPRECATED
+# This repository is DEPRECATED.
 This WebView merged into cocos2d-x3.3!
+
+Please use [cocos2d/cocos2d-x](https://github.com/cocos2d/cocos2d-x)
 
 # Require
 * cocos2d-x ver3.0(or greater
